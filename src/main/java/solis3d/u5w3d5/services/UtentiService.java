@@ -1,5 +1,6 @@
 package solis3d.u5w3d5.services;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import solis3d.u5w3d5.entities.Utente;
 import solis3d.u5w3d5.exceptions.BadRequestException;
@@ -13,9 +14,11 @@ import java.util.UUID;
 public class UtentiService {
 
     private final UtentiRepository utentiRepository;
+    private final PasswordEncoder bcrypt;
 
-    public UtentiService(UtentiRepository utentiRepository) {
+    public UtentiService(UtentiRepository utentiRepository, PasswordEncoder bcrypt) {
         this.utentiRepository = utentiRepository;
+        this.bcrypt = bcrypt;
     }
 
     public Utente saveNewUtente(UtenteDTO body) {
@@ -27,7 +30,7 @@ public class UtentiService {
                 body.nome(),
                 body.cognome(),
                 body.email(),
-                body.password(),
+                this.bcrypt.encode(body.password()),
                 body.ruolo()
         );
 
